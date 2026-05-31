@@ -18,10 +18,10 @@ global_raw_data = {}
 is_running = True
 
 def signal_handler(sig, frame):
-    global is_running
+    global is_running, global_raw_data
     print("\n\n⚠️ Interrupt received! Saving progress...")
     is_running = False
-    save_raw_data()
+    save_raw_data(global_raw_data)
     print("✅ Safe exit complete. Run merge_syntax_and_examples.py to finalize.")
     sys.exit(0)
 
@@ -62,16 +62,18 @@ def fetch_examples(syntax_id):
     except Exception:
         return syntax_id, []
 
-def save_raw_data():
-    global global_raw_data
+def save_raw_data(data):
     try:
         with open(RAW_EXAMPLES_FILE, 'w', encoding='utf-8') as f:
-            json.dump(global_raw_data, f, indent=2, ensure_ascii=False)
-        print(f"💾 Saved {len(global_raw_data)} entries to {RAW_EXAMPLES_FILE}")
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        print(f"💾 Saved {len(data)} entries to {RAW_EXAMPLES_FILE}")
     except Exception as e:
         print(f"❌ Error saving raw data: {e}")
 
 def main():
+    # CRITICAL FIX: Declare global_raw_data as global so Python knows we mean the variable defined above
+    global global_raw_data
+    
     os.makedirs(DATA_DIR, exist_ok=True)
     valid_ids = load_syntax_ids(SYNTAX_FILE)
     
@@ -104,10 +106,10 @@ def main():
             status = f"✅ {len(examples)} ex" if examples else "⚪ empty"
             print(f"   [{completed}/{total}] ID {sid}: {status}")
             if completed % 50 == 0:
-                save_raw_data()
+                save_raw_data(global_raw_data)
                 
     if is_running:
-        save_raw_data()
+        save_raw_data(global_raw_data)
         print("✅ Phase 1 Complete. Run merge_syntax_and_examples.py next.")
 
 if __name__ == "__main__":
