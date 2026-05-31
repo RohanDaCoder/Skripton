@@ -2,7 +2,9 @@
 set -e
 
 echo "⏳ Installing Skripton dependencies for Google Colab..."
-echo "⚠️ Ignoring dependency conflicts to preserve Colab's PyTorch version."
+
+echo "-> Upgrading torchao for PEFT compatibility..."
+pip install -U torchao
 
 echo "-> Installing trl peft accelerate..."
 pip install --no-deps trl peft accelerate
