@@ -3,11 +3,9 @@ import json
 import random
 import re
 import sys
-from config import TARGET_ADDONS
+from config import TARGET_ADDONS, DATA_DIR, DATASET_FILE, MERGED_FILE
 
-DATA_DIR = "data"
-DATASET_FILE = os.path.join(DATA_DIR, "skripton_dataset.json")
-MERGED_FILE = os.path.join(DATA_DIR, "syntax_with_examples.json")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
