@@ -2,11 +2,11 @@ import os
 import json
 import random
 import re
+from config import TARGET_ADDONS
 
 DATA_DIR = "data"
 DATASET_FILE = os.path.join(DATA_DIR, "skripton_dataset.json")
 MERGED_FILE = os.path.join(DATA_DIR, "syntax_with_examples.json")
-TARGET_ADDONS = ["Skript", "SkBee"]
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
