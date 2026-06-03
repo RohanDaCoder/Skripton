@@ -13,6 +13,7 @@ from config import (
     LORA_ALPHA,
     OUTPUT_DIR,
     DATASET_FILE,
+    TRAIN_BATCH_SIZE,
 )
 
 from unsloth import FastLanguageModel
@@ -69,7 +70,7 @@ def main():
         max_seq_length=MAX_SEQ_LENGTH,
         tokenizer=tokenizer,
         args=TrainingArguments(
-            per_device_train_batch_size=1,
+            per_device_train_batch_size=TRAIN_BATCH_SIZE,
             gradient_accumulation_steps=16,
             warmup_steps=0.1,
             num_train_epochs=3,
