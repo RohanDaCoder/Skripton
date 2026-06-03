@@ -16,5 +16,5 @@ LORA_R = 32
 LORA_ALPHA = 32
 
 OUTPUT_DIR = os.path.join(MODELS_DIR, "lora_adapter")
-MERGED_DIR = os.path.join(MODELS_DIR, "merged_16bit") 
+MERGED_DIR = os.path.join(MODELS_DIR, "merged_16bit")
 GGUF_DIR = os.path.join(MODELS_DIR, "gguf")
