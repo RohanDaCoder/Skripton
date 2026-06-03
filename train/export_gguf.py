@@ -33,7 +33,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     print("🔄 Applying LoRA adapter...")
-    model = PeftModel.from_pretrained(model, OUTPUT_DIR)
+    model = PeftModel.from_pretrained(model, OUTPUT_DIR, local_files_only=True)
 
     print("🔄 Merging adapter into base model...")
     model = model.merge_and_unload()
