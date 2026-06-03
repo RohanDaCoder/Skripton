@@ -3,9 +3,9 @@ import json
 import random
 import re
 import sys
-from config import TARGET_ADDONS, DATA_DIR, DATASET_FILE, MERGED_FILE
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import TARGET_ADDONS, DATA_DIR, DATASET_FILE, MERGED_FILE
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
