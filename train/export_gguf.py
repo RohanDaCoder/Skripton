@@ -6,31 +6,29 @@ import gc
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import MODEL_NAME, OUTPUT_DIR, MERGED_DIR, GGUF_DIR
 
+
 def main():
     from google.colab import files
-    
+
     # 1. Setup llama.cpp scripts
     print("⬇️ Downloading llama.cpp python scripts...")
     if not os.path.exists("llama.cpp"):
-        !git clone --depth 1 https://github.com/ggerganov/llama.cpp.git
-    !pip install -r llama.cpp/requirements.txt -q
+        os.system("git clone --depth 1 https://github.com/ggerganov/llama.cpp.git")
+    os.system("uv pip install -r llama.cpp/requirements.txt -q")
 
     from transformers import AutoModelForCausalLM, AutoTokenizer
     from peft import PeftModel
 
-    BASE_MODEL = "Qwen/Qwen2.5-1.5B-Instruct" 
-
     print("🔄 Loading base model in 16-bit")
     model = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL,
+        MODEL_NAME,
         device_map="auto",
         torch_dtype=torch.float16,
     )
-    tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     print("🔄 Applying LoRA adapter...")
     model = PeftModel.from_pretrained(model, OUTPUT_DIR)
-
 
     print("🔄 Merging adapter into base model...")
     model = model.merge_and_unload()
@@ -47,7 +45,9 @@ def main():
 
     print("💾 Converting to Q4_K_M GGUF format using llama.cpp python script...")
     os.makedirs(GGUF_DIR, exist_ok=True)
-    !python llama.cpp/convert_hf_to_gguf.py {MERGED_DIR} --outfile models/gguf/skripton_qwen.gguf --outtype q4_k_m
+    os.system(
+        f"python llama.cpp/convert_hf_to_gguf.py {MERGED_DIR} --outfile models/gguf/skripton_qwen.gguf --outtype q4_k_m"
+    )
 
     gguf_path = "models/gguf/skripton_qwen.gguf"
     if os.path.exists(gguf_path):
@@ -56,6 +56,7 @@ def main():
         files.download(gguf_path)
     else:
         print("❌ GGUF file not found. Check the conversion logs above for errors.")
+
 
 if __name__ == "__main__":
     main()
