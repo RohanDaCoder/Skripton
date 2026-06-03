@@ -11,11 +11,9 @@ def merge():
     print(f"\n🔄 Merging {RAW_EXAMPLES_FILE} into {MERGED_FILE}...")
 
     if not os.path.exists(SYNTAX_FILE):
-        print(f"❌ {SYNTAX_FILE} not found. Run download_syntax.py first.")
-        return
+        os.system("python scripts/download_syntax.py")
     if not os.path.exists(RAW_EXAMPLES_FILE):
-        print(f"❌ {RAW_EXAMPLES_FILE} not found. Run download_examples.py first.")
-        return
+        os.system("python scripts/download_examples.py")
 
     with open(SYNTAX_FILE, "r", encoding="utf-8") as f:
         syntax_data = json.load(f)

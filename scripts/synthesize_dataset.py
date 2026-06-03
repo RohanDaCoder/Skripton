@@ -2,7 +2,6 @@ import os
 import json
 import random
 import re
-from google.colab import files
 
 DATA_DIR = "data"
 DATASET_FILE = os.path.join(DATA_DIR, "skripton_dataset.json")
@@ -12,10 +11,7 @@ TARGET_ADDONS = ["Skript", "SkBee"]
 os.makedirs(DATA_DIR, exist_ok=True)
 
 if not os.path.exists(MERGED_FILE):
-    print(f"❌ {MERGED_FILE} not found. Please upload it:")
-    uploaded = files.upload()
-    uploaded_name = list(uploaded.keys())[0]
-    os.rename(uploaded_name, MERGED_FILE)
+    os.system("python scripts/merge_syntax_and_examples.py")
 
 
 def normalize_skript_tabs(code):
