@@ -6,6 +6,11 @@ import gc
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import MODEL_NAME, OUTPUT_DIR, MERGED_DIR, GGUF_DIR
 
+ADAPTER_CONFIG = os.path.join(OUTPUT_DIR, "adapter_config.json")
+
+if not os.path.exists(ADAPTER_CONFIG):
+    os.system("python train/train.py")
+
 
 def main():
     from google.colab import files
