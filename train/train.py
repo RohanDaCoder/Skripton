@@ -48,7 +48,6 @@ def main():
         max_seq_length=MAX_SEQ_LENGTH,
         tokenizer=tokenizer,
         args=TrainingArguments(
-            pad_token="<|PAD_TOKEN|>",
             per_device_train_batch_size=1,       
             gradient_accumulation_steps=16,      
             warmup_steps=0.1,
