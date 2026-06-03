@@ -2,6 +2,7 @@ import os
 import json
 import random
 import re
+import sys
 from config import TARGET_ADDONS
 
 DATA_DIR = "data"
@@ -12,6 +13,8 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 if not os.path.exists(MERGED_FILE):
     os.system("python scripts/merge_syntax_and_examples.py")
+if os.path.exists(DATASET_FILE):
+    sys.exit(0)
 
 
 def normalize_skript_tabs(code):
