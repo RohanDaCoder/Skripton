@@ -5,7 +5,7 @@ import re
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import TARGET_ADDONS, MERGED_FILE, DATASET_FILE, DATA_DIR
+from config import TARGET_ADDONS, DATA_DIR, MERGED_FILE, DATASET_FILE
 
 def normalize_skript_tabs(code):
     if not code: return ""
@@ -31,9 +31,17 @@ def inject_advanced_bug(code):
 
 def main():
     os.makedirs(DATA_DIR, exist_ok=True)
+    
     if not os.path.exists(MERGED_FILE):
-        print(f"❌ {MERGED_FILE} not found. Run merge script first.")
-        return
+        try:
+            from google.colab import files
+            print(f"❌ {MERGED_FILE} not found. Please upload it:")
+            uploaded = files.upload()
+            uploaded_name = list(uploaded.keys())[0]
+            os.rename(uploaded_name, MERGED_FILE)
+        except ImportError:
+            print(f"❌ {MERGED_FILE} not found. Run download/merge scripts first.")
+            return
 
     with open(MERGED_FILE, "r", encoding="utf-8") as f:
         merged_data = json.load(f)
@@ -53,7 +61,7 @@ def main():
         for ex in examples:
             code = normalize_skript_tabs(ex.get("example_code", ""))
             if code and len(code) > 20: valid_codes.add(code)
-            
+                
         if pattern and desc:
             dataset.append({"messages": [{"role": "system", "content": "You are a Skript documentation AI. Provide concise syntax documentation."}, {"role": "user", "content": f"Explain the syntax for `{title}` in Skript."}, {"role": "assistant", "content": f"**Syntax:** `{pattern}`\n**Description:** {desc}"}]})
 
@@ -65,7 +73,7 @@ def main():
             if any(kw in code for kw in ["set ", "give ", "teleport ", "send "]): plan_steps.append("4. Apply the effect or action.")
             if not plan_steps: plan_steps.append("1. Implement the core Skript logic.")
             
-            cot_response = f"**Plan:**\n" + "\n".join(plan_steps) + f"\n\n**Code:**\n```skript\n{code}\n```"
+            cot_response = "**Plan:**\n" + "\n".join(plan_steps) + f"\n\n**Code:**\n```skript\n{code}\n```"
             dataset.append({"messages": [{"role": "system", "content": "You are an expert Skript developer. Always plan your approach step-by-step before writing code."}, {"role": "user", "content": f"I need a script for {title}. Think through the logic first, then write the code."}, {"role": "assistant", "content": cot_response}]})
 
             if random.random() < 0.4:

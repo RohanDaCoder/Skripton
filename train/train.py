@@ -2,6 +2,9 @@ import os
 import sys
 import torch
 
+# MUST BE AT THE TOP: Prevents CUDA OOM fragmentation errors on T4
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import MODEL_NAME, MAX_SEQ_LENGTH, LORA_R, LORA_ALPHA, OUTPUT_DIR, DATASET_FILE
 
@@ -45,9 +48,10 @@ def main():
         max_seq_length=MAX_SEQ_LENGTH,
         tokenizer=tokenizer,
         args=TrainingArguments(
-            per_device_train_batch_size=4,
-            gradient_accumulation_steps=4,
-            warmup_ratio=0.1,
+            pad_token="<|PAD_TOKEN|>",
+            per_device_train_batch_size=1,       
+            gradient_accumulation_steps=16,      
+            warmup_steps=0.1,
             num_train_epochs=3,
             learning_rate=2e-4,
             fp16=not torch.cuda.is_bf16_supported(),
@@ -64,6 +68,7 @@ def main():
 
     print("🚀 Starting training...")
     trainer.train()
+
     model.save_pretrained(OUTPUT_DIR)
     tokenizer.save_pretrained(OUTPUT_DIR)
     print(f"✅ Training complete. Adapter saved to {OUTPUT_DIR}")
