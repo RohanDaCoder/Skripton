@@ -10,7 +10,7 @@ RAW_EXAMPLES_FILE = os.path.join(DATA_DIR, "raw_examples.json")
 MERGED_FILE = os.path.join(DATA_DIR, "syntax_with_examples.json")
 DATASET_FILE = os.path.join(DATA_DIR, "skripton_dataset.json")
 
-MODEL_NAME = "unsloth/Qwen2.5-1.5B-Instruct-unsloth-bnb-4bit"
+MODEL_NAME = "unsloth/Qwen2.5-1.5B-Instruct"
 TRAIN_BATCH_SIZE = 1
 MAX_SEQ_LENGTH = 1024
 LORA_R = 32
