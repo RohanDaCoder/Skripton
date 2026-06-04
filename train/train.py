@@ -84,6 +84,7 @@ def main():
             seed=42,
             output_dir=OUTPUT_DIR,
             report_to="none",
+            save_strategy="no",
         ),
     )
 
