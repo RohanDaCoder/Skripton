@@ -7,12 +7,12 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import SYNTAX_FILE, RAW_EXAMPLES_FILE, MERGED_FILE
 
 
-def merge():
+def merge(force=False):
     print(f"\n🔄 Merging {RAW_EXAMPLES_FILE} into {MERGED_FILE}...")
 
-    if not os.path.exists(SYNTAX_FILE):
+    if not os.path.exists(SYNTAX_FILE) or force:
         os.system("python scripts/download_syntax.py")
-    if not os.path.exists(RAW_EXAMPLES_FILE):
+    if not os.path.exists(RAW_EXAMPLES_FILE) or force:
         os.system("python scripts/download_examples.py")
 
     with open(SYNTAX_FILE, "r", encoding="utf-8") as f:
@@ -39,4 +39,4 @@ def merge():
 
 
 if __name__ == "__main__":
-    merge()
+    merge(force="--force" in sys.argv)
