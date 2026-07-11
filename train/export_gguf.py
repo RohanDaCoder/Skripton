@@ -22,7 +22,7 @@ def main():
     print("⬇️ Setting up llama.cpp...")
     if not os.path.exists("llama.cpp"):
         os.system("git clone --depth 1 https://github.com/ggerganov/llama.cpp.git")
-    os.system("uv pip install -r llama.cpp/requirements.txt -q")
+    os.system("uv pip install --index-strategy unsafe-best-match numpy huggingface-hub tokenizers sentencepiece protobuf -q")
 
     # 2. Merge the LoRA adapter into the base model (skip if already merged)
     merged_model_file = os.path.join(MERGED_DIR, "model.safetensors")
