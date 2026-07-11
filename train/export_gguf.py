@@ -48,13 +48,26 @@ def main():
     gc.collect()
     torch.cuda.empty_cache()
 
-    print("💾 Converting to Q4_K_M GGUF format using llama.cpp python script...")
+    print("💾 Converting to F16 GGUF format using llama.cpp python script...")
     os.makedirs(GGUF_DIR, exist_ok=True)
+    f16_path = os.path.join(GGUF_DIR, "skripton_qwen_f16.gguf")
     os.system(
-        f"python llama.cpp/convert_hf_to_gguf.py {MERGED_DIR} --outfile models/gguf/skripton_qwen.gguf --outtype q4_k_m"
+        f"python llama.cpp/convert_hf_to_gguf.py {MERGED_DIR} --outfile {f16_path} --outtype f16"
     )
 
-    gguf_path = "models/gguf/skripton_qwen.gguf"
+    gguf_path = os.path.join(GGUF_DIR, "skripton_qwen.gguf")
+    if os.path.exists(f16_path):
+        print("🔨 Building llama-quantize from llama.cpp...")
+        os.system("cd llama.cpp && make -j llama-quantize 2>/dev/null || make llama-quantize")
+        quantize_bin = "llama.cpp/build/bin/llama-quantize"
+        if not os.path.exists(quantize_bin):
+            quantize_bin = "llama.cpp/llama-quantize"
+        print(f"🔄 Quantizing F16 GGUF to Q4_K_M: {gguf_path}")
+        os.system(f"{quantize_bin} {f16_path} {gguf_path} q4_k_m")
+    else:
+        print("❌ F16 GGUF file not found. Check the conversion logs above for errors.")
+        return
+
     if os.path.exists(gguf_path):
         print(f"✅ GGUF model ready: {gguf_path}")
         print("⬇️ Starting download to your local machine...")

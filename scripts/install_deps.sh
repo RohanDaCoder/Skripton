@@ -1,4 +1,3 @@
-%%bash
 curl -LsSf https://astral.sh/uv/install.sh | sh &> /dev/null
 echo "⏳ Installing Skripton dependencies for Google Colab..."
 uv pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git" &> /dev/null
